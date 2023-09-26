@@ -189,3 +189,23 @@ getAllEligibleProblems();
 
 // DONT run this again.. it was already populated on 26th sep,2023
 // populateAllActiveUsers();
+
+
+
+
+/*
+Changes for iteration 2! 
+1. weighted averages for problems solved wrt ratings 
+2. Select only those problems which have been upsolved/practiced as the ones solved in contests are unlikely to help in knowledge growth
+3. 	
+
+
+
+// mentioning the submissions response below.
+                "participantType": "PRACTICE",
+                "ghost": false,
+                "startTimeSeconds": 1493391900
+            },
+            "programmingLanguage": "GNU C++17 (64)",
+            "verdict": "WRONG_ANSWER",
+*/
