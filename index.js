@@ -40,22 +40,57 @@ const getSubmissions = async (handle) => {
 	return response.data.result;
 }
 
+
+// Iterative function to implement Binary Search
+let binSearch = function (arr, x) {
+  
+    let start=0, end=arr.length-1;
+         
+    // Iterate while start not meets end
+	let ans = arr[0].newRating;
+
+    while (start<=end){
+ 
+        // Find the mid index
+        let mid=Math.floor((start + end)/2);
+		
+        if (arr[mid].ratingUpdateTimeSeconds<=x)
+		{
+			ans = arr[mid].newRating;
+            start = mid + 1;
+		}
+        else
+             end = mid - 1;
+    }
+
+	ans = Math.max(ans,800);
+	ans = Math.round(ans/100)*100;
+
+    return ans;
+}
+
 const getEligibleProblems = async (user) => {
 	const { handle } = user;
 	const now = getEpochSecond();
 	const thresholdTime = now - observationTime;
 
 	let rating = await getRating(handle);
-	rating = rating.filter(r => r.ratingUpdateTimeSeconds >= thresholdTime);
-	if (rating.length < contestThreshold) {
+	// let userRating = {...rating};
+
+	let xrating = rating.filter(r => r.ratingUpdateTimeSeconds >= thresholdTime);
+	if (xrating.length < contestThreshold) {
 		return [];
 	}
 
 	let allSubmissions = await getSubmissions(handle);
+	//---------------------changed for second version-----------------------------------------
 	allSubmissions = allSubmissions.filter(s => s.creationTimeSeconds >= thresholdTime && s.verdict === 'OK');
-	
+	allSubmissions = allSubmissions.filter(s => s.author.participantType==='PRACTICE');
+	//--------------------------------------------------------------------------------------
 	const problemIds = new Set();
 	let submissions = [];
+	let submissionCount = 0;
+
 	for (const submission of allSubmissions) {
 		const key = getProblemKey(submission.problem);
 		if (problemIds.has(key)) {
@@ -63,9 +98,49 @@ const getEligibleProblems = async (user) => {
 		}
 		problemIds.add(key);
 		submissions.push(submission);
+
+		//-------------------------changed for second version--------------------------
+		submissionCount++;
+
+		let problemRating = submission.problem.rating;
+		let submissionTime = submission.creationTimeSeconds;
+		
+		let ratingBeforeSubmission = binSearch(rating,submissionTime);
+
+		if(Math.abs(problemRating-ratingBeforeSubmission)>=700 || (problemRating-ratingBeforeSubmission)<=-400)
+		{
+			continue;
+		}
+		
+		
+		let count = 0;
+
+		// const arr = {"-300": 1,"-200": 3,"-100": 6,"0":8,"100":9,"200":9,"300":8,"400":6,"500":3,"600":1};
+		// count = arr.toString(problemRating-ratingBeforeSubmission);
+		let arr = [1,3,6,8,9,9,8,6,3,1];
+		for(let diff = -300; diff<=600; diff+=100)
+		{
+			if(problemRating-ratingBeforeSubmission===diff)
+			{
+				break;
+			}
+			count++;
+		}
+
+
+		for(let i=0; i<arr[count]; i++)
+		{
+			submissions.push(submission);
+		}
+		//------------------------------------------------------------------------------------
+		
 	}
 
-	if (submissions.length < problemThreshold) {
+	// if (submissions.length < problemThreshold) {
+	// 	return [];
+	// }
+
+	if(submissionCount<problemThreshold){
 		return [];
 	}
 
