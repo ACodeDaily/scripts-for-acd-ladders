@@ -252,8 +252,8 @@ const getAllEligibleProblems = async (startFrom, doSkipped = false) => {
 	console.log('Done');
 }
 
-getAllEligibleProblems();
-// getAllEligibleProblems(46014, true);
+// getAllEligibleProblems();
+getAllEligibleProblems(61007, true);
 
 // const data1 = JSON.parse(fs.readFileSync('./checkpoints/checkpoint_46014.json'));
 // const data2 = JSON.parse(fs.readFileSync('./checkpoints/checkpoint_48814.json'));
