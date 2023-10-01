@@ -253,7 +253,7 @@ const getAllEligibleProblems = async (startFrom, doSkipped = false) => {
 }
 
 // getAllEligibleProblems();
-getAllEligibleProblems(61007, true);
+getAllEligibleProblems(64407, true);
 
 // const data1 = JSON.parse(fs.readFileSync('./checkpoints/checkpoint_46014.json'));
 // const data2 = JSON.parse(fs.readFileSync('./checkpoints/checkpoint_48814.json'));
